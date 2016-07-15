@@ -48,6 +48,13 @@
   :group 'w32-registry
   :type 'string)
 
+(defcustom w32-registry-regedit-exe
+  (or (executable-find "regedit.exe")
+      (expand-file-name "regedit.exe" (getenv "windir")))
+  "Location of regedit.exe executable."
+  :group 'w32-registry
+  :type 'string)
+
 (defcustom w32-registry-regex
   "\\([A-Za-z_0-9]+\\)\\s-*\\(REG_[A-Za-z]+\\)\\s-*\\([0-9a-zA-Z]+\\)"
   "Regex to match registry entries: (subkey, type, value)."
@@ -65,11 +72,13 @@ buffers."
 ;;* mode
 (defvar Reg-menu
   '("Registry"
-    ["Lookup" w32-registry-template "Show registry key in buffer" :keys "C-c C-?"]
-    ["List" w32-registry-list "Convert registry key contents to list" :keys "C-c C-l"]
-    ["Value" w32-registry-value "Show value of subkey" :keys "C-c C-v"]
+    ["Lookup" w32-registry-template :help "Show registry key in buffer" :keys "C-c C-?"]
+    ["List" w32-registry-list :help "Convert registry key contents to list" :keys "C-c C-l"]
+    ["Value" w32-registry-value :help "Show value of subkey" :keys "C-c C-v"]
     "--"
-    ["Template" w32-registry-template "Insert template" :keys "C-c C-t"]))
+    ["Regedit" w32-registry-regedit :help "Open regedit.exe" :keys "C-c C-e"]
+    "--"
+    ["Template" w32-registry-template :help "Insert template" :keys "C-c C-t"]))
 
 (defvar w32-registry-mode-map
   (let ((map (make-sparse-keymap)))
@@ -78,6 +87,7 @@ buffers."
     (define-key map (kbd "C-c C-?") #'w32-registry-lookup)
     (define-key map (kbd "C-c C-l") #'w32-registry-list)
     (define-key map (kbd "C-c C-v") #'w32-registry-value)
+    (define-key map (kbd "C-c C-e") #'w32-registry-regedit)
     map))
 
 (define-abbrev-table 'w32-registry-mode-abbrev-table
@@ -105,6 +115,11 @@ buffers."
 
 ;; ------------------------------------------------------------
 ;;* functions
+(defun w32-registry-regedit ()
+  "Open regedit.exe externally."
+  (interactive)
+  (call-process-shell-command w32-registry-regedit-exe nil 0))
+
 (defun w32-registry-lookup (key)
   "Show value of registry KEY in buffer."
   (interactive "sRegKey: ")
