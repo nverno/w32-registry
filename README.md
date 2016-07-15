@@ -5,7 +5,7 @@
 
 Simple mode for windows registry files, derived from `conf-windows-mode`.
 Adds some convenience functions to look at registry key values, basic
-menu and bindings.
+menu, bindings, imenu, etc.
 
 See also: https://www.emacswiki.org/emacs/MsWindowsRegistry
 

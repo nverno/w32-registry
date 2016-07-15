@@ -16,7 +16,7 @@ all: compile $(auto) README.md
 
 compile : $(elc)
 %.elc : %.el
-	$(emacs) -batch -f byte-compile-file $<
+	$(emacs) -batch -f batch-byte-compile $<
 
 $(auto):
 	$(emacs) -batch $(auto_flags)
