@@ -16,6 +16,9 @@
 ;; Adds some convenience functions to look at registry key values, basic
 ;; menu, bindings, imenu, etc.
 
+;; For company-mode completion for registry keys, see
+;; [company-w32reg](http://github.com/nverno/company-w32reg)
+
 ;; See also: https://www.emacswiki.org/emacs/MsWindowsRegistry
 
 ;;; Usage:
@@ -30,7 +33,7 @@
 
 (defgroup w32-registry nil
   "Simple mode for windows registry files."
-  :group 'convenience
+  :group 'languages
   :prefix "w32-registry-")
 
 ;; ------------------------------------------------------------
