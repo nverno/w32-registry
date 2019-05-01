@@ -1,29 +1,34 @@
-;;; w32-registry-mode.el --- Simple mode for windows registry files.
+;;; w32-registry --- major mode for editing windows registry files  -*- lexical-binding: t; -*-
 
-;; Author: noah peart <noah.v.peart@gmail.com>
-;; URL: http://github.com/nverno/w32-registry-mode
+;; Author: Noah Peart <noah.v.peart@gmail.com>
+;; URL: https://github.com/nverno/w32-tools
+;; Package-Requires: 
+;; Created:  8 November 2016
 
-;; This file is not part of GNU Emacs
-
-;; This is free software: you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
+;; This file is not part of GNU Emacs.
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
 
-;; Simple mode for windows registry files, derived from `conf-windows-mode'.
-;; Adds some convenience functions to look at registry key values, basic
-;; menu, bindings, imenu, etc.
-
-;; For company-mode completion for registry keys, see
-;; [company-w32reg](http://github.com/nverno/company-w32reg)
-
-;; See also: https://www.emacswiki.org/emacs/MsWindowsRegistry
-
-;;; Usage:
-
-;; Just add to load-path and the mode should autoload for .reg files.
+;;  `w32-registry-mode' is major mode for editing windows registry files.
+;;  Adds some convenience functions to look at registry key values, basic
+;;  menu, bindings, imenu, etc.
+;;  Company completion for registry values
+;;  [company-w32reg](http://github.com/nverno/company-w32reg)
 
 ;;; Code:
 
@@ -36,8 +41,6 @@
   :group 'languages
   :prefix "w32-registry-")
 
-;; ------------------------------------------------------------
-;;* variables
 (defcustom w32-registry-header
   "Windows Registry Editor Version 5.00"
   "Header to insert in '.reg' file."
@@ -72,20 +75,21 @@ buffers."
 
 
 ;; ------------------------------------------------------------
-;;* mode
-(defvar Reg-menu
+;;; Major-mode
+
+(defvar w32-registry-menu
   '("Registry"
-    ["Lookup" w32-registry-template :help "Show registry key in buffer" :keys "C-c C-?"]
-    ["List" w32-registry-list :help "Convert registry key contents to list" :keys "C-c C-l"]
-    ["Value" w32-registry-value :help "Show value of subkey" :keys "C-c C-v"]
+    ["Lookup" w32-registry-template :help "Show registry key in buffer" t]
+    ["List" w32-registry-list :help "Convert registry key contents to list" t]
+    ["Value" w32-registry-value :help "Show value of subkey" t]
     "--"
-    ["Regedit" w32-registry-regedit :help "Open regedit.exe" :keys "C-c C-e"]
+    ["Regedit" w32-registry-regedit :help "Open regedit.exe" t]
     "--"
-    ["Template" w32-registry-template :help "Insert template" :keys "C-c C-t"]))
+    ["Template" w32-registry-template :help "Insert template" t]))
 
 (defvar w32-registry-mode-map
   (let ((map (make-sparse-keymap)))
-    (easy-menu-define nil map nil Reg-menu)
+    (easy-menu-define nil map nil w32-registry-menu)
     (define-key map (kbd "C-c C-t") #'w32-registry-template)
     (define-key map (kbd "C-c C-?") #'w32-registry-lookup)
     (define-key map (kbd "C-c C-l") #'w32-registry-list)
@@ -93,15 +97,10 @@ buffers."
     (define-key map (kbd "C-c C-e") #'w32-registry-regedit)
     map))
 
-(define-abbrev-table 'w32-registry-mode-abbrev-table
-  '(("hkcu" "HKEY_CURRENT_USER" nil :system t)
-    ("hklm" "HKEY_LOCAL_MACHINE" nil :system t))
-  "w32-registry abbrevs table."
-  :case-fixed nil)
-
 ;;;###autoload
 (define-derived-mode w32-registry-mode conf-windows-mode "Reg"
-  "Major mode for editing windows registry files.\n
+  "Major mode for editing windows registry files.
+
 \\{w32-registry-mode-map}"
   (setq-local local-abbrev-table w32-registry-mode-abbrev-table)
   (setq-local imenu-generic-expression '((nil "^\\[\\([^\]]+\\)\\].*" 1)))
@@ -117,7 +116,8 @@ buffers."
 
 
 ;; ------------------------------------------------------------
-;;* functions
+;;; Commands
+
 (defun w32-registry-regedit ()
   "Open regedit.exe externally."
   (interactive)
@@ -168,6 +168,5 @@ otherwise template is inserted at beginning of buffer and point preserved."
       (insert "\n"))
     (when (= 0 size) (goto-char (point-max)))))
 
-(provide 'w32-registry-mode)
-
-;;; w32-registry-mode.el ends here
+(provide 'w32-registry)
+;;; w32-registry.el ends here
